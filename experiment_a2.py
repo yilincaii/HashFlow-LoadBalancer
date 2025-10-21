@@ -42,4 +42,4 @@ async def main():
     plt.show()
 
 if __name__ == '_main_':
-    asyncio.run(main()) 
+    asyncio.run(main())
