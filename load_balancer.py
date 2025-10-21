@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import random
+import hashlib
 import json
 from consistent_hash_map import ConsistentHashMap
 
@@ -109,6 +110,53 @@ def route_request(path):
         "status": "successful"
     }
     return jsonify(response), 200
+
+class ConsistentHashing:
+    def __init__(self, servers, replicas=3):
+        self.replicas = replicas
+        self.ring = dict()
+        self.sorted_keys = []
+        for server in servers:
+            self.add_server(server)
+
+    def hash(self, key):
+        return int(hashlib.md5(key.encode()).hexdigest(), 16)
+
+    def add_server(self, server):
+        for i in range(self.replicas):
+            replica_key = f"{server}:{i}"
+            key = self.hash(replica_key)
+            self.ring[key] = server
+            self.sorted_keys.append(key)
+        self.sorted_keys.sort()
+
+    def remove_server(self, server):
+        for i in range(self.replicas):
+            replica_key = f"{server}:{i}"
+            key = self.hash(replica_key)
+            del self.ring[key]
+            self.sorted_keys.remove(key)
+
+    def get_server(self, key):
+        if not self.ring:
+            return None
+        hash_key = self.hash(key)
+        for key in self.sorted_keys:
+            if hash_key <= key:
+                return self.ring[key]
+        return self.ring[self.sorted_keys[0]]
+
+# Flask setup
+app = Flask(__name__)
+servers = ["http://server1:5001", "http://server2:5002"]
+hash_ring = ConsistentHashing(servers)
+
+@app.route('/api', methods=['GET'])
+def handle_request():
+    client_ip = request.remote_addr
+    server = hash_ring.get_server(client_ip)
+    response = requests.get(f"{server}/api")
+    return jsonify(response.json())
 
 
 if __name__ == '__main__':
