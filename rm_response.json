@@ -1,0 +1,12 @@
+
+{
+  "message": {
+    "N": 3, 
+    "replicas": [
+      "Server 1", 
+      "Server 2", 
+      "Server 3"
+    ]
+  }, 
+  "status": "successful"
+}
