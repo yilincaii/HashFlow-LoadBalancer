@@ -1,8 +1,9 @@
-
-version: '3.8'
-
 services:
   load_balancer:
     build: .
+    container_name: hashflow-loadbalancer
     ports:
-      - "5000:5000"
+      - "5002:5000"
+    environment:
+      - FLASK_ENV=development
+    restart: unless-stopped

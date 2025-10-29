@@ -2,15 +2,15 @@ import requests
 
 def test_endpoints():
     # GET /rep
-    response = requests.get('http://localhost:5000/rep')
+    response = requests.get('http://localhost:5002/rep')
     print(response.json())
 
     # POST /add
-    response = requests.post('http://localhost:5000/add', json={"n": 2, "hostnames": ["S5", "S4"]})
+    response = requests.post('http://localhost:5002/add', json={"n": 2, "hostnames": ["S5", "S4"]})
     print(response.json())
 
     # DELETE /rm
-    response = requests.delete('http://localhost:5000/rm', json={"n": 1, "hostnames": ["S5"]})
+    response = requests.delete('http://localhost:5002/rm', json={"n": 1, "hostnames": ["S5"]})
     print(response.json())
 
 def simulate_server_failure():
@@ -22,6 +22,6 @@ def simulate_server_failure():
     # Observe how the load balancer spawns a new instance (depends on your setup)
     print("Observing load balancer response to failure...")
 
-if __name__ == '_main_':
+if __name__ == '__main__':
     test_endpoints()
     simulate_server_failure()

@@ -10,7 +10,7 @@ async def fetch(session, url):
 
 async def make_requests(n):
     async with aiohttp.ClientSession() as session:
-        tasks = [fetch(session, f'http://localhost:5000/rep') for _ in range(10000)]
+        tasks = [fetch(session, f'http://localhost:5002/rep') for _ in range(10000)]
         responses = await asyncio.gather(*tasks)
     return responses
 
@@ -41,5 +41,5 @@ async def main():
     plt.savefig('experiment_A2_results.png')
     plt.show()
 
-if __name__ == '_main_':
+if __name__ == '__main__':
     asyncio.run(main())

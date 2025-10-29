@@ -1,18 +1,9 @@
-# Use the official lightweight Python image
-FROM python:3.12-slim
-
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
-# Set the working directory in the container
+FROM python:3.9-slim
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 WORKDIR /app
-
-# Copy all files to the working directory
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-
-# Install any dependencies
-RUN pip install Flask --no-cache-dir -r requirements.txt
-
-# Command to run on container start
-CMD [ "python", "./app.py", "&", "python", "./load_balancer.py" ]
+EXPOSE 5000
+CMD ["python", "load_balancer_main.py"]
